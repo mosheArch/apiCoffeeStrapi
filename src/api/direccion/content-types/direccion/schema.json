@@ -1,0 +1,55 @@
+{
+  "kind": "collectionType",
+  "collectionName": "direccions",
+  "info": {
+    "singularName": "direccion",
+    "pluralName": "direccions",
+    "displayName": "Direccion",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "nombre": {
+      "type": "string",
+      "required": true
+    },
+    "calle": {
+      "type": "string",
+      "required": true
+    },
+    "numero_exterior": {
+      "type": "string",
+      "required": true
+    },
+    "numero_interior": {
+      "type": "string"
+    },
+    "codigo_postal": {
+      "type": "string",
+      "required": true
+    },
+    "referencias": {
+      "type": "string",
+      "required": true
+    },
+    "estado": {
+      "type": "string",
+      "required": true
+    },
+    "ciudad": {
+      "type": "string",
+      "required": true
+    },
+    "telefono": {
+      "type": "string"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}

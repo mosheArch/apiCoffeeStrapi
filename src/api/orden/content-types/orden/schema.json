@@ -1,0 +1,52 @@
+{
+  "kind": "collectionType",
+  "collectionName": "ordens",
+  "info": {
+    "singularName": "orden",
+    "pluralName": "ordens",
+    "displayName": "Orden",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "total": {
+      "type": "decimal"
+    },
+    "idPago": {
+      "type": "string",
+      "required": true
+    },
+    "direccionEnvio": {
+      "type": "json",
+      "required": true
+    },
+    "productos": {
+      "type": "json",
+      "required": true
+    },
+    "estado": {
+      "type": "enumeration",
+      "enum": ["pendiente", "pagada", "enviada", "entregada", "cancelada"],
+      "default": "pendiente"
+    },
+    "fechaPago": {
+      "type": "datetime"
+    },
+    "numeroOrden": {
+      "type": "string",
+      "unique": true
+    },
+    "metodoPago": {
+      "type": "string"
+    }
+  }
+}
+
