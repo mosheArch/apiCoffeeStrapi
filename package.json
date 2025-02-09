@@ -12,12 +12,15 @@
   },
   "dependencies": {
     "@strapi/plugin-cloud": "5.8.0",
+    "@strapi/plugin-documentation": "^5.9.0",
     "@strapi/plugin-users-permissions": "5.8.0",
+    "@strapi/provider-upload-aws-s3": "^5.8.0",
     "@strapi/strapi": "5.8.0",
     "pg": "8.8.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.0.0",
+    "stripe": "^17.5.0",
     "styled-components": "^6.0.0"
   },
   "devDependencies": {
