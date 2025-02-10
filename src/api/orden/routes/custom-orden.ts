@@ -9,5 +9,14 @@ module.exports = {
                 middlewares: [],
             },
         },
+        {
+            method: "PUT",
+            path: "/ordens/:id/update-status",
+            handler: "orden.updateOrderStatus",
+            config: {
+                policies: [],
+                middlewares: [],
+            },
+        },
     ],
 };

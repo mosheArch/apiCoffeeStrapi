@@ -67,10 +67,12 @@
     },
     "nombres": {
       "type": "string",
+      "configurable": false,
       "required": true
     },
     "apellidos": {
       "type": "string",
+      "configurable": false,
       "required": true
     }
   }

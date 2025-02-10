@@ -378,7 +378,7 @@ export interface ApiCarritoCarrito extends Struct.CollectionTypeSchema {
     singularName: 'carrito';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     cantidad: Schema.Attribute.Integer &
@@ -414,7 +414,7 @@ export interface ApiCategoriaCategoria extends Struct.CollectionTypeSchema {
     singularName: 'categoria';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -444,7 +444,7 @@ export interface ApiDireccionDireccion extends Struct.CollectionTypeSchema {
     singularName: 'direccion';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     calle: Schema.Attribute.String & Schema.Attribute.Required;
@@ -484,7 +484,7 @@ export interface ApiHomeBannerHomeBanner extends Struct.CollectionTypeSchema {
     singularName: 'home-banner';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     banner: Schema.Attribute.Media<'images'>;
@@ -515,7 +515,7 @@ export interface ApiOrdenOrden extends Struct.CollectionTypeSchema {
     singularName: 'orden';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -532,6 +532,8 @@ export interface ApiOrdenOrden extends Struct.CollectionTypeSchema {
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::orden.orden'> &
       Schema.Attribute.Private;
     metodoPago: Schema.Attribute.String;
+    numeroGuia: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'generando'>;
     numeroOrden: Schema.Attribute.String & Schema.Attribute.Unique;
     productos: Schema.Attribute.JSON & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
@@ -555,7 +557,7 @@ export interface ApiProductoProducto extends Struct.CollectionTypeSchema {
     singularName: 'producto';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     categoria: Schema.Attribute.Relation<

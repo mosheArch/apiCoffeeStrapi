@@ -2,7 +2,6 @@ const Stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
 const { createCoreController } = require("@strapi/strapi").factories
 const sgMail = require("@sendgrid/mail")
 
-// Configurar SendGrid
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 module.exports = createCoreController("api::orden.orden", ({ strapi }) => ({
@@ -52,17 +51,17 @@ module.exports = createCoreController("api::orden.orden", ({ strapi }) => ({
             if (!payment_method) return ctx.badRequest("Falta el payment_method")
             if (!direccionEnvio) return ctx.badRequest("Falta la dirección de envío")
 
-            // Obtener los productos del carrito del usuario
+            // Obtener los elementos del carrito del usuario
             const cartItems = await strapi.db.query("api::carrito.carrito").findMany({
                 where: { user: user.id },
                 populate: ["producto"],
             })
 
+            console.log("Cart Items:", JSON.stringify(cartItems, null, 2))
+
             if (!cartItems || cartItems.length === 0) {
                 return ctx.badRequest("El carrito está vacío")
             }
-
-            console.log("Cart Items:", JSON.stringify(cartItems, null, 2))
 
             // Calcular el total de la orden y preparar los productos
             let totalPayment = 0
@@ -208,5 +207,136 @@ module.exports = createCoreController("api::orden.orden", ({ strapi }) => ({
             }
         }
     },
+
+    async updateOrderStatus(ctx) {
+        try {
+            const { id } = ctx.params
+
+            console.log("Full context:", JSON.stringify(ctx, null, 2))
+            console.log("Request body:", ctx.request.body)
+            console.log("Request query:", ctx.query)
+            console.log("Request headers:", ctx.request.headers)
+
+            let data
+            if (ctx.request.body && ctx.request.body.data) {
+                data = ctx.request.body.data
+            } else if (ctx.request.body) {
+                data = ctx.request.body
+            } else if (ctx.query && ctx.query.data) {
+                data = JSON.parse(ctx.query.data)
+            } else {
+                console.log("No se pudo encontrar datos en el cuerpo de la solicitud")
+                return ctx.badRequest("El cuerpo de la solicitud está vacío o mal formateado")
+            }
+
+            console.log("Parsed data:", data)
+
+            const { estado, numeroGuia } = data
+
+            console.log("Received update request:", { id, estado, numeroGuia })
+
+            if (!id || !estado || !numeroGuia) {
+                return ctx.badRequest("Faltan datos requeridos (id, estado, numeroGuia)")
+            }
+
+            const orden = await strapi.entityService.findOne("api::orden.orden", id, {
+                populate: ["user"],
+            })
+
+            console.log("Orden obtenida:", JSON.stringify(orden, null, 2))
+
+            if (!orden || !orden.user) {
+                return ctx.notFound("Orden no encontrada o sin usuario asociado")
+            }
+
+            const updatedOrden = await strapi.entityService.update("api::orden.orden", id, {
+                data: {
+                    estado,
+                    numeroGuia,
+                },
+                populate: ["user"],
+            })
+
+            console.log("Orden actualizada:", JSON.stringify(updatedOrden, null, 2))
+
+            // Enviar correo de notificación de envío
+            await this.sendShippingNotificationEmail(updatedOrden)
+
+            return ctx.send({
+                success: true,
+                order: updatedOrden,
+            })
+        } catch (error) {
+            console.error("Error al actualizar el estado de la orden:", error)
+            return ctx.badRequest(`Error al actualizar el estado de la orden: ${error.message}`)
+        }
+    },
+
+    async sendShippingNotificationEmail(order) {
+        try {
+            console.log("Orden recibida en sendShippingNotificationEmail:", JSON.stringify(order, null, 2))
+
+            if (!order.user) {
+                console.error("Error: La orden no tiene un usuario asociado")
+                return
+            }
+
+            if (!order.user.email) {
+                console.error("Error: El usuario asociado no tiene email", order.user)
+                return
+            }
+
+            const msg = {
+                to: order.user.email,
+                from: "no-responder@clicafe.com",
+                subject: "Tu pedido ha sido enviado",
+                text: `
+          Hola ${order.user.nombres || "Estimado cliente"},
+          
+          Tu pedido con número de orden ${order.numeroOrden} ha sido enviado.
+          
+          Número de guía: ${order.numeroGuia}
+          
+          Puedes usar este número de guía para rastrear tu paquete.
+          
+          Gracias por tu compra.
+          
+          Saludos,
+          Tu Tienda
+        `,
+                html: `
+          <h2>Tu pedido ha sido enviado</h2>
+          <p>Hola ${order.user.nombres || "Estimado cliente"},</p>
+          <p>Tu pedido con número de orden ${order.numeroOrden} ha sido enviado.</p>
+          <p><strong>Número de guía:</strong> ${order.numeroGuia}</p>
+          <p>Puedes usar este número de guía para rastrear tu paquete.</p>
+          <p>Gracias por tu compra.</p>
+          <p>Saludos,<br>Tu Tienda</p>
+        `,
+            }
+
+            await sgMail.send(msg)
+            console.log(`Correo de notificación de envío enviado para la orden ${order.numeroOrden}`)
+        } catch (error) {
+            console.error("Error al enviar el correo de notificación de envío:", error)
+            if (error.response) {
+                console.error("Error details:", error.response.body)
+            }
+        }
+    },
 }))
+
+// Función auxiliar para leer el cuerpo de la solicitud manualmente
+function getRawBody(req) {
+    return new Promise((resolve, reject) => {
+        let data = ""
+        req.on("data", (chunk) => {
+            data += chunk
+        })
+        req.on("end", () => {
+            resolve(data)
+        })
+        req.on("error", reject)
+    })
+}
 

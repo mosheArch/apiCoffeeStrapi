@@ -8,7 +8,7 @@
     "description": ""
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
@@ -34,7 +34,13 @@
     },
     "estado": {
       "type": "enumeration",
-      "enum": ["pendiente", "pagada", "enviada", "entregada", "cancelada"],
+      "enum": [
+        "pendiente",
+        "pagada",
+        "enviada",
+        "entregada",
+        "cancelada"
+      ],
       "default": "pendiente"
     },
     "fechaPago": {
@@ -46,7 +52,10 @@
     },
     "metodoPago": {
       "type": "string"
+    },
+    "numeroGuia": {
+      "type": "string",
+      "default": "generando"
     }
   }
 }
-
