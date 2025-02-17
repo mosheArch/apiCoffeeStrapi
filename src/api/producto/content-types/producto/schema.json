@@ -48,9 +48,9 @@
       "default": 0,
       "required": true
     },
-    "imagen": {
+    "main_image": {
       "type": "media",
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "allowedTypes": [
         "images"

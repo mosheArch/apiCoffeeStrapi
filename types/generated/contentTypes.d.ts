@@ -383,7 +383,6 @@ export interface ApiCarritoCarrito extends Struct.CollectionTypeSchema {
   attributes: {
     cantidad: Schema.Attribute.Integer &
       Schema.Attribute.Required &
-      Schema.Attribute.Unique &
       Schema.Attribute.DefaultTo<1>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -450,6 +449,11 @@ export interface ApiDireccionDireccion extends Struct.CollectionTypeSchema {
     calle: Schema.Attribute.String & Schema.Attribute.Required;
     ciudad: Schema.Attribute.String & Schema.Attribute.Required;
     codigo_postal: Schema.Attribute.String & Schema.Attribute.Required;
+    colonia: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 30;
+      }> &
+      Schema.Attribute.DefaultTo<'colonia'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -464,7 +468,11 @@ export interface ApiDireccionDireccion extends Struct.CollectionTypeSchema {
     numero_exterior: Schema.Attribute.String & Schema.Attribute.Required;
     numero_interior: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
-    referencias: Schema.Attribute.String & Schema.Attribute.Required;
+    referencias: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
     telefono: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -568,13 +576,13 @@ export interface ApiProductoProducto extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     descripcion: Schema.Attribute.Text & Schema.Attribute.Required;
-    imagen: Schema.Attribute.Media<'images', true> & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::producto.producto'
     > &
       Schema.Attribute.Private;
+    main_image: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
     nombre: Schema.Attribute.String & Schema.Attribute.Required;
     peso: Schema.Attribute.String & Schema.Attribute.Required;
     precio: Schema.Attribute.Decimal & Schema.Attribute.Required;
@@ -1049,7 +1057,9 @@ export interface PluginUsersPermissionsUser
     draftAndPublish: false;
   };
   attributes: {
-    apellidos: Schema.Attribute.String & Schema.Attribute.Required;
+    apellido: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'user'>;
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     confirmationToken: Schema.Attribute.String & Schema.Attribute.Private;
     confirmed: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
@@ -1067,7 +1077,9 @@ export interface PluginUsersPermissionsUser
       'plugin::users-permissions.user'
     > &
       Schema.Attribute.Private;
-    nombres: Schema.Attribute.String & Schema.Attribute.Required;
+    nombre: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'root'>;
     password: Schema.Attribute.Password &
       Schema.Attribute.Private &
       Schema.Attribute.SetMinMaxLength<{
@@ -1083,12 +1095,7 @@ export interface PluginUsersPermissionsUser
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    username: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.Unique &
-      Schema.Attribute.SetMinMaxLength<{
-        minLength: 3;
-      }>;
+    username: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 

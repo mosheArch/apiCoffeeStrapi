@@ -101,7 +101,7 @@ module.exports = createCoreController("api::orden.orden", ({ strapi }) => ({
                     enabled: true,
                     allow_redirects: "never",
                 },
-                description: `Orden para ${user.username} ${user.apellidos}`,
+                description: `Orden para ${user.nombres} ${user.apellidos}`,
             })
 
             console.log("PaymentIntent creado:", paymentIntent.id)
@@ -156,7 +156,7 @@ module.exports = createCoreController("api::orden.orden", ({ strapi }) => ({
                 from: "no-responder@clicafe.com", // Asegúrate de que este email esté verificado en SendGrid
                 subject: "Confirmación de tu orden",
                 text: `
-          Hola ${user.username},
+          Hola ${user.nombres},
           
           Gracias por tu compra. Tu orden con número ${order.numeroOrden} ha sido confirmada.
           
@@ -178,7 +178,7 @@ module.exports = createCoreController("api::orden.orden", ({ strapi }) => ({
         `,
                 html: `
           <h2>Gracias por tu compra</h2>
-          <p>Hola ${user.username},</p>
+          <p>Hola ${user.nombres},</p>
           <p>Tu orden con número ${order.numeroOrden} ha sido confirmada.</p>
           <h3>Detalles de la orden:</h3>
           <ul>
@@ -291,7 +291,7 @@ module.exports = createCoreController("api::orden.orden", ({ strapi }) => ({
                 from: "no-responder@clicafe.com",
                 subject: "Tu pedido ha sido enviado",
                 text: `
-          Hola ${order.user.username || "Estimado cliente"},
+          Hola ${order.user.nombres || "Estimado cliente"},
           
           Tu pedido con número de orden ${order.numeroOrden} ha sido enviado.
           
@@ -306,7 +306,7 @@ module.exports = createCoreController("api::orden.orden", ({ strapi }) => ({
         `,
                 html: `
           <h2>Tu pedido ha sido enviado</h2>
-          <p>Hola ${order.user.username || "Estimado cliente"},</p>
+          <p>Hola ${order.user.nombres || "Estimado cliente"},</p>
           <p>Tu pedido con número de orden ${order.numeroOrden} ha sido enviado.</p>
           <p><strong>Número de guía:</strong> ${order.numeroGuia}</p>
           <p>Puedes usar este número de guía para rastrear tu paquete.</p>

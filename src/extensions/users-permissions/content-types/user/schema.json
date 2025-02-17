@@ -14,8 +14,6 @@
   "attributes": {
     "username": {
       "type": "string",
-      "minLength": 3,
-      "unique": true,
       "configurable": false,
       "required": true
     },
@@ -65,15 +63,15 @@
       "inversedBy": "users",
       "configurable": false
     },
-    "nombres": {
+    "nombre": {
       "type": "string",
-      "configurable": false,
-      "required": true
+      "required": true,
+      "default": "root"
     },
-    "apellidos": {
+    "apellido": {
       "type": "string",
-      "configurable": false,
-      "required": true
+      "required": true,
+      "default": "user"
     }
   }
 }
